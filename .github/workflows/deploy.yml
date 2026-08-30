@@ -26,5 +26,6 @@ jobs:
           fi
           git config --global user.email "deploy-bot@omnitext.org"
           git config --global user.name "OmniText Deploy Bot"
-          git remote add hf "https://x-access-token:${HF_TOKEN}@huggingface.co/spaces/Silverfang180/omnitext-backend"
-          git push --force hf main:main
+          git remote remove hf 2>/dev/null || true
+          git remote add hf "https://Silverfang180:${HF_TOKEN}@huggingface.co/spaces/Silverfang180/omnitext-backend"
+          git push --force hf main:main || echo "::warning ::Failed to push to Hugging Face Space. Verify HF_TOKEN secret and Space existence."

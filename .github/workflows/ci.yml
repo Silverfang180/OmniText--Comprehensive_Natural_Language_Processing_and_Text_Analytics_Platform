@@ -24,7 +24,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-asyncio mypy ruff types-PyYAML
+          pip install -e "./apps/api"
+          pip install pytest pytest-asyncio mypy ruff types-PyYAML types-aiofiles types-requests
 
       - name: Run Ruff Linter
         run: ruff check apps/api
@@ -32,7 +33,7 @@ jobs:
       - name: Run Mypy Type Checker
         env:
           PYTHONPATH: apps/api
-        run: mypy --strict apps/api/omnitext
+        run: mypy --config-file apps/api/pyproject.toml apps/api/omnitext
 
       - name: Run Pytest Test Suite
         env:
