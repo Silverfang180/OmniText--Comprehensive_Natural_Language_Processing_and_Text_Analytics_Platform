@@ -1,0 +1,1 @@
+OmniText is an NLP monolith. It features summarization, sentiment analysis, NER, classification, and keyphrase extraction. It also supports semantic search over ingested corpora.

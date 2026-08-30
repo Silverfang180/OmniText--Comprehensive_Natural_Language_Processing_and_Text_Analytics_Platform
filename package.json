@@ -1,0 +1,19 @@
+{
+  "name": "omnitext-v2",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OmniText V2 - Text Intelligence & NLP Platform",
+  "scripts": {
+    "dev:web": "npm --prefix apps/web run dev",
+    "dev:api": "uvicorn omnitext.main:app --app-dir apps/api --reload --port 8001",
+    "dev:worker": "python apps/api/omnitext/worker/main.py",
+    "build:web": "npm --prefix apps/web run build",
+    "lint:web": "npm --prefix apps/web run lint",
+    "test:api": "pytest apps/api/tests -v",
+    "typecheck:api": "mypy --strict apps/api/omnitext",
+    "typecheck:web": "npm --prefix apps/web run typecheck"
+  },
+  "workspaces": [
+    "apps/web"
+  ]
+}

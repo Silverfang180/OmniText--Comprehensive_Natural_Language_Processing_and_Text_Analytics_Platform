@@ -1,0 +1,20 @@
+fastapi==0.111.0
+uvicorn==0.30.5
+pydantic==2.8.2
+pydantic-settings==2.4.0
+sqlalchemy==2.0.31
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+aiosqlite==0.20.0
+PyYAML==6.0.1
+python-multipart==0.0.9
+httpx==0.27.0
+transformers==4.41.2
+sentence-transformers==2.7.0
+pypdf==4.2.0
+python-docx==1.1.2
+scikit-learn==1.5.0
+aiofiles==22.1.0
+scipy==1.13.1
+huggingface-hub==0.23.0
+torch --index-url https://download.pytorch.org/whl/cpu

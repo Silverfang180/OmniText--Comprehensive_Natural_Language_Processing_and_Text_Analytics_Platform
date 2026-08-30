@@ -1,0 +1,28 @@
+name: Deploy to Hugging Face Spaces
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Pushes code to Hugging Face Space repository.
+      # Make sure to add HF_TOKEN to your GitHub repo secrets.
+      - name: Push to Hugging Face
+        run: |
+          # Configure Git credentials
+          git config --global user.email "deploy-bot@omnitext.org"
+          git config --global user.name "OmniText Deploy Bot"
+          
+          # Add Hugging Face Space as a remote and push force
+          # Note: Ensure your Space on Hugging Face is named 'omnitext-backend' or adjust the space name below.
+          git remote add hf "https://x-access-token:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/Silverfang180/omnitext-backend"
+          git push --force hf main:main

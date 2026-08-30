@@ -1,0 +1,33 @@
+# OmniText Task Configuration
+# Single source of vocabulary for task registry keys:
+# summarization, sentiment, ner, classification, keyword_extraction, semantic_search, question_answering
+
+tasks:
+  summarization:
+    display_name: "Summarization"
+    default_model: null
+    status: "pending_benchmark"
+  sentiment:
+    display_name: "Sentiment Analysis"
+    default_model: null
+    status: "pending_benchmark"
+  ner:
+    display_name: "Named Entity Recognition"
+    default_model: null
+    status: "pending_benchmark"
+  classification:
+    display_name: "Text Classification"
+    default_model: null
+    status: "pending_benchmark"
+  keyword_extraction:
+    display_name: "Keyword / Keyphrase Extraction"
+    default_model: null
+    status: "pending_benchmark"
+  semantic_search:
+    display_name: "Semantic Search"
+    default_model: null
+    status: "pending_benchmark"
+  question_answering:
+    display_name: "Extractive Question Answering"
+    default_model: null
+    status: "pending_benchmark"

@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: omnitext-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: omnitext
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d omnitext"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ..
+      dockerfile: infra/docker/api.Dockerfile
+    container_name: omnitext-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      API_HOST: "0.0.0.0"
+      API_PORT: 8000
+      API_ENV: "development"
+      API_DEBUG: "true"
+      API_DATABASE_URL: "postgresql+asyncpg://postgres:postgres@postgres:5432/omnitext"
+      DATABASE_URL_SYNC: "postgresql://postgres:postgres@postgres:5432/omnitext"
+      API_CORS_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000,http://web:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: ..
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: omnitext-worker
+    restart: unless-stopped
+    environment:
+      API_ENV: "development"
+      API_DATABASE_URL: "postgresql+asyncpg://postgres:postgres@postgres:5432/omnitext"
+      DATABASE_URL_SYNC: "postgresql://postgres:postgres@postgres:5432/omnitext"
+      WORKER_POLL_INTERVAL_SECONDS: 2
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/web.Dockerfile
+    container_name: omnitext-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: "http://localhost:8000"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
