@@ -27,6 +27,8 @@ dependencies = [
     "scikit-learn>=1.4.0",
     "aiofiles>=22.1.0",
     "scipy>=1.13.0",
+    "bcrypt>=4.1.0",
+    "pyjwt>=2.8.0",
 ]
 
 [project.optional-dependencies]
