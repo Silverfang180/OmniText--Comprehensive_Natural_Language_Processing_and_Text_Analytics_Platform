@@ -16,16 +16,17 @@ def hash_password(password: str) -> str:
     password_bytes = password.encode("utf-8")
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password_bytes, salt)
-    return hashed.decode("utf-8")
+    return str(hashed.decode("utf-8"))
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a plain text password against a stored bcrypt hash."""
     try:
-        return bcrypt.checkpw(
+        res: bool = bcrypt.checkpw(
             plain_password.encode("utf-8"),
             hashed_password.encode("utf-8"),
         )
+        return res
     except ValueError:
         return False
 
@@ -46,7 +47,7 @@ def create_access_token(data: dict[str, Any], expires_delta: timedelta | None = 
         settings.JWT_SECRET_KEY,
         algorithm=settings.JWT_ALGORITHM,
     )
-    return encoded_jwt
+    return str(encoded_jwt)
 
 
 def decode_access_token(token: str) -> dict[str, Any] | None:

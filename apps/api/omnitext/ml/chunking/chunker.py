@@ -74,7 +74,7 @@ def aggregate_classification(predictions_list: list[list[dict[str, Any]]]) -> li
         aggregated.append({"label": label, "score": round(avg_score, 4)})
 
     # Sort descending by score
-    aggregated.sort(key=lambda x: x["score"], reverse=True)
+    aggregated.sort(key=lambda x: float(x["score"]), reverse=True)
     return aggregated
 
 
@@ -96,7 +96,7 @@ def aggregate_ner(entities_list: list[list[dict[str, Any]]]) -> list[dict[str, A
 
     # Return entities sorted by start index
     result = list(merged.values())
-    result.sort(key=lambda x: x["start"])
+    result.sort(key=lambda x: int(x["start"]))
     return result
 
 
@@ -114,5 +114,5 @@ def aggregate_keywords(keywords_list: list[list[dict[str, Any]]], top_n: int = 8
         avg_score = sum(scores) / len(scores)
         merged.append({"keyword": word, "score": round(avg_score, 4)})
 
-    merged.sort(key=lambda x: x["score"], reverse=True)
+    merged.sort(key=lambda x: float(x["score"]), reverse=True)
     return merged[:top_n]
