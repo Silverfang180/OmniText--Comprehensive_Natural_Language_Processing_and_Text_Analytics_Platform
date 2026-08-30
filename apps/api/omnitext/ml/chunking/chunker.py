@@ -1,7 +1,7 @@
 """Task-specific document chunking and aggregation module."""
 
 import re
-from typing import Any, cast
+from typing import Any
 
 
 def split_text_with_offsets(text: str, max_words: int = 400, overlap: int = 50) -> list[tuple[str, int]]:
@@ -64,17 +64,17 @@ def aggregate_classification(predictions_list: list[list[dict[str, Any]]]) -> li
     label_scores: dict[str, list[float]] = {}
     for predictions in predictions_list:
         for pred in predictions:
-            label = pred["label"]
-            score = pred["score"]
+            label = str(pred["label"])
+            score = float(pred["score"])
             label_scores.setdefault(label, []).append(score)
 
-    aggregated = []
+    aggregated: list[dict[str, Any]] = []
     for label, scores in label_scores.items():
         avg_score = sum(scores) / len(scores)
         aggregated.append({"label": label, "score": round(avg_score, 4)})
 
     # Sort descending by score
-    aggregated.sort(key=lambda x: cast(float, x["score"]), reverse=True)
+    aggregated.sort(key=lambda x: x["score"], reverse=True)
     return aggregated
 
 
@@ -86,17 +86,17 @@ def aggregate_ner(entities_list: list[list[dict[str, Any]]]) -> list[dict[str, A
     merged: dict[tuple[int, int, str], dict[str, Any]] = {}
     for entities in entities_list:
         for ent in entities:
-            key = (ent["start"], ent["end"], ent["label"])
+            key = (int(ent["start"]), int(ent["end"]), str(ent["label"]))
             if key not in merged:
                 merged[key] = ent
             else:
                 # Keep entity with higher confidence
-                if ent["confidence"] > merged[key]["confidence"]:
+                if float(ent["confidence"]) > float(merged[key]["confidence"]):
                     merged[key] = ent
 
     # Return entities sorted by start index
-    result = list(merged.values())
-    result.sort(key=lambda x: cast(int, x["start"]))
+    result: list[dict[str, Any]] = list(merged.values())
+    result.sort(key=lambda x: x["start"])
     return result
 
 
@@ -105,14 +105,14 @@ def aggregate_keywords(keywords_list: list[list[dict[str, Any]]], top_n: int = 8
     keyword_scores: dict[str, list[float]] = {}
     for keywords in keywords_list:
         for kw in keywords:
-            word = kw["keyword"]
-            score = kw["score"]
+            word = str(kw["keyword"])
+            score = float(kw["score"])
             keyword_scores.setdefault(word, []).append(score)
 
-    merged = []
+    merged: list[dict[str, Any]] = []
     for word, scores in keyword_scores.items():
         avg_score = sum(scores) / len(scores)
         merged.append({"keyword": word, "score": round(avg_score, 4)})
 
-    merged.sort(key=lambda x: cast(float, x["score"]), reverse=True)
+    merged.sort(key=lambda x: x["score"], reverse=True)
     return merged[:top_n]
