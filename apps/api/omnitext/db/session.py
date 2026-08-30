@@ -54,7 +54,7 @@ async def check_db_health() -> bool:
 
 async def init_db_and_seed() -> None:
     """Initialize database tables and seed the model registry if empty."""
-    from omnitext.db.models import Base, ModelRegistryEntry, BenchmarkResult
+    from omnitext.db.models import Base, BenchmarkResult, ModelRegistryEntry
 
     # Create tables
     async with engine.begin() as conn:

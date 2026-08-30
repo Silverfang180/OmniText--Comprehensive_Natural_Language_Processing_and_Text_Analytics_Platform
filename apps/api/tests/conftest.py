@@ -98,8 +98,7 @@ def mock_pipeline_factory(task_name: str, *args: Any, **kwargs: Any) -> MagicMoc
 async def init_test_db():
     """Initialize test database tables and seeds before running each test."""
     # Import all models to register them on Base
-    from omnitext.db.models import Base, User, APIKey, Analysis, Document, Dataset, Job
-    from omnitext.db.models.benchmark import ModelRegistryEntry, BenchmarkResult
+    from omnitext.db.models import Base
     
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
