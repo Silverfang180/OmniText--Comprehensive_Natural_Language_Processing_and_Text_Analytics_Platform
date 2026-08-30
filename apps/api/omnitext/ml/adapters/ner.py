@@ -1,7 +1,7 @@
 """Named Entity Recognition (NER) Task Adapter Implementation."""
 
 import time
-from typing import Any
+from typing import Any, cast
 
 from omnitext.ml.adapters.base import ModelRef, TaskAdapter, TaskInput, TaskOutput
 
@@ -17,7 +17,7 @@ class NerAdapter(TaskAdapter):
 
     def load(self, model_ref: ModelRef) -> None:
         """Load and initialize model pipeline."""
-        from transformers import pipeline  # type: ignore[import-untyped]
+        from transformers import pipeline
 
         self.model_ref = model_ref
         model_id = model_ref.model_id
@@ -26,7 +26,8 @@ class NerAdapter(TaskAdapter):
         
         revision = model_ref.version if model_ref.version else None
 
-        self.pipeline = pipeline(
+        pipeline_fn = cast(Any, pipeline)
+        self.pipeline = pipeline_fn(
             "ner",
             model=model_id,
             revision=revision,

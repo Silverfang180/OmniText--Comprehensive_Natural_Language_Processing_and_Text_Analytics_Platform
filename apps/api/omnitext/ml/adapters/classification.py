@@ -17,7 +17,7 @@ class ClassificationAdapter(TaskAdapter):
 
     def load(self, model_ref: ModelRef) -> None:
         """Load and initialize model pipeline."""
-        from transformers import pipeline  # type: ignore[import-untyped]
+        from transformers import pipeline
 
         self.model_ref = model_ref
         model_id = model_ref.model_id
