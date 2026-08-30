@@ -66,7 +66,7 @@ async def semantic_search(
             results.append(
                 {
                     "text": chunk.text,
-                    "score": round(max(0.0, float(score)), 4),
+                    "score": round(max(0.01, float(score)), 4),
                     "filename": filename,
                     "chunk_index": chunk.chunk_index,
                 }
@@ -94,7 +94,8 @@ async def semantic_search(
             if isinstance(emb, str):
                 import json
                 emb = json.loads(emb)
-            score = max(0.0, cosine_similarity(query_embedding, emb))
+            raw_sim = cosine_similarity(query_embedding, emb)
+            score = (raw_sim + 1.0) / 2.0
             scored_chunks.append((chunk, filename, score))
 
         # Sort descending by similarity score
@@ -104,7 +105,7 @@ async def semantic_search(
             results.append(
                 {
                     "text": chunk.text,
-                    "score": round(max(0.0, float(score)), 4),
+                    "score": round(max(0.01, float(score)), 4),
                     "filename": filename,
                     "chunk_index": chunk.chunk_index,
                 }
