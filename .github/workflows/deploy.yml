@@ -17,12 +17,14 @@ jobs:
       # Pushes code to Hugging Face Space repository.
       # Make sure to add HF_TOKEN to your GitHub repo secrets.
       - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Configure Git credentials
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::warning ::HF_TOKEN secret is not set in GitHub repository settings yet. Skipping auto-push to Hugging Face."
+            exit 0
+          fi
           git config --global user.email "deploy-bot@omnitext.org"
           git config --global user.name "OmniText Deploy Bot"
-          
-          # Add Hugging Face Space as a remote and push force
-          # Note: Ensure your Space on Hugging Face is named 'omnitext-backend' or adjust the space name below.
-          git remote add hf "https://x-access-token:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/Silverfang180/omnitext-backend"
+          git remote add hf "https://x-access-token:${HF_TOKEN}@huggingface.co/spaces/Silverfang180/omnitext-backend"
           git push --force hf main:main
