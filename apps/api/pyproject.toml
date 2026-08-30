@@ -62,3 +62,8 @@ line-length = 120
 ignore = [
     "B008",    # Do not perform function call Depends in argument defaults
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["omnitext*"]
+

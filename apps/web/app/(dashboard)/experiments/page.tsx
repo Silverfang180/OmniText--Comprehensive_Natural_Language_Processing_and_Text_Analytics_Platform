@@ -103,7 +103,7 @@ export default function ExperimentsPage() {
           // Keep current selection or default to latest
           setSelectedExperiment((curr) => {
             if (curr) {
-              const updated = dataList.find((e) => e.id === curr.id);
+              const updated = dataList.find((e: ExperimentModel) => e.id === curr.id);
               return updated || dataList[0];
             }
             return dataList[0];
@@ -129,7 +129,7 @@ export default function ExperimentsPage() {
         });
         if (res.data) {
           setExperiments(res.data);
-          const updated = res.data.find((e) => e.id === selectedExperiment.id);
+          const updated = res.data.find((e: ExperimentModel) => e.id === selectedExperiment.id);
           if (updated) {
             setSelectedExperiment(updated);
             if (updated.status !== "running" && updated.status !== "pending") {
