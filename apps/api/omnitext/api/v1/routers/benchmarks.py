@@ -21,6 +21,7 @@ router = APIRouter(prefix="/benchmarks", tags=["Benchmarks"])
 
 
 @router.get("")
+@router.get("/")
 async def list_benchmarks(
     request: Request,
     db: AsyncSession = Depends(db_session_dependency),

@@ -69,17 +69,28 @@ mock_classification_pipeline = MagicMock(
         "scores": [0.8, 0.1, 0.05, 0.03, 0.01, 0.01],
     }
 )
-mock_qa_pipeline = MagicMock(
-    return_value={
-        "answer": "Paris",
-        "score": 0.99,
-        "start": 0,
-        "end": 5,
-    }
-)
+def mock_qa_pipeline(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    # Extract question and context from args or kwargs
+    question = ""
+    context = ""
+    if "question" in kwargs:
+        question = str(kwargs["question"]).lower()
+    if "context" in kwargs:
+        context = str(kwargs["context"]).lower()
+    if args:
+        if len(args) >= 1 and isinstance(args[0], str):
+            question = args[0].lower()
+        if len(args) >= 2 and isinstance(args[1], str):
+            context = args[1].lower()
+
+    if "google" in question or "google" in context:
+        return {"answer": "Larry Page and Sergey Brin", "score": 0.99, "start": 37, "end": 64}
+    if "einstein" in question or "relativity" in context:
+        return {"answer": "theory of relativity", "score": 0.99, "start": 26, "end": 46}
+    return {"answer": "Paris", "score": 0.99, "start": 0, "end": 5}
 
 
-def mock_pipeline_factory(task_name: str, *args: Any, **kwargs: Any) -> MagicMock:
+def mock_pipeline_factory(task_name: str, *args: Any, **kwargs: Any) -> Any:
     """Mock factory returning task-specific mock pipelines."""
     if task_name == "summarization":
         return mock_summary_pipeline
