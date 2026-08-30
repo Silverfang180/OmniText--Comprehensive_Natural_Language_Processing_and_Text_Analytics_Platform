@@ -83,6 +83,8 @@ def mock_qa_pipeline(*args: Any, **kwargs: Any) -> dict[str, Any]:
         if len(args) >= 2 and isinstance(args[1], str):
             context = args[1].lower()
 
+    if "germany" in question or "germany" in context:
+        return {"answer": "Germany", "score": 0.99, "start": 52, "end": 59}
     if "google" in question or "google" in context:
         return {"answer": "Larry Page and Sergey Brin", "score": 0.99, "start": 37, "end": 64}
     if "einstein" in question or "relativity" in context:
