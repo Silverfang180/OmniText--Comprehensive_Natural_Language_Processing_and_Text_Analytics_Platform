@@ -77,7 +77,7 @@ async def qa_search(
         extra={
             "dataset_id": dataset_id,
             "document_id": document_id,
-            "filename": top_chunk["filename"],
+            "document_title": top_chunk["filename"],
             "match_score": top_chunk["score"],
         },
     )

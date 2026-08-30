@@ -54,7 +54,7 @@ async def check_db_health() -> bool:
 
 async def init_db_and_seed() -> None:
     """Initialize database tables and seed the model registry if empty."""
-    from omnitext.db.models import Base, ModelRegistryEntry, BenchmarkResult
+    from omnitext.db.models import Base, BenchmarkResult, ModelRegistryEntry
 
     # Create tables
     async with engine.begin() as conn:
@@ -72,6 +72,7 @@ async def init_db_and_seed() -> None:
                 # Summarization
                 ModelRegistryEntry(task="summarization", model_id="sshleifer/distilbart-cnn-6-6", is_active=True),
                 ModelRegistryEntry(task="summarization", model_id="sshleifer/distilbart-cnn-12-3", is_active=False),
+                ModelRegistryEntry(task="summarization", model_id="facebook/bart-large-cnn", is_active=False),
                 # Sentiment
                 ModelRegistryEntry(task="sentiment", model_id="distilbert-base-uncased-finetuned-sst-2-english", is_active=True),
                 ModelRegistryEntry(task="sentiment", model_id="cardiffnlp/twitter-roberta-base-sentiment", is_active=False),

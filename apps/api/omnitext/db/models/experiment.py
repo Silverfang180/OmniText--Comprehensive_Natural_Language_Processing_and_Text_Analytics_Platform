@@ -43,4 +43,4 @@ class Experiment(Base):
     )
 
     # Relationships
-    user: Mapped["User"] = relationship("User", back_populates="experiments")
+    user: Mapped[User] = relationship("User", back_populates="experiments")

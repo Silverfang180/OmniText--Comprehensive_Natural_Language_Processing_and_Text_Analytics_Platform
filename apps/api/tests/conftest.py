@@ -12,10 +12,16 @@ mock_st_class = MagicMock()
 mock_st_model = MagicMock()
 
 def dummy_encode(sentences: list[str], **kwargs: Any) -> np.ndarray:
-    num = len(sentences)
-    embeddings = np.random.randn(num, 384)
-    norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
-    return embeddings / norms
+    vectors: list[np.ndarray] = []
+    for sentence in sentences:
+        vec = np.zeros(384, dtype=np.float32)
+        for token in sentence.lower().split():
+            vec[hash(token) % 384] += 1.0
+        if not np.any(vec):
+            vec[0] = 1.0
+        vec /= np.linalg.norm(vec)
+        vectors.append(vec)
+    return np.vstack(vectors)
 
 mock_st_model.encode.side_effect = dummy_encode
 mock_st_class.return_value = mock_st_model
@@ -69,14 +75,28 @@ mock_classification_pipeline = MagicMock(
         "scores": [0.8, 0.1, 0.05, 0.03, 0.01, 0.01],
     }
 )
-mock_qa_pipeline = MagicMock(
-    return_value={
-        "answer": "Paris",
-        "score": 0.99,
-        "start": 0,
-        "end": 5,
-    }
-)
+def mock_qa_response(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    question = str(kwargs.get("question", ""))
+    context = str(kwargs.get("context", ""))
+    q_lower = question.lower()
+    c_lower = context.lower()
+
+    if "who founded google" in q_lower and "larry page" in c_lower:
+        answer = "Larry Page"
+    elif "capital of france" in q_lower and "paris" in c_lower:
+        answer = "Paris"
+    elif "what theory did albert einstein develop" in q_lower and "relativity" in c_lower:
+        answer = "theory of relativity"
+    else:
+        answer = context.split(".")[0].strip() if context.strip() else ""
+
+    start = c_lower.find(answer.lower()) if answer else 0
+    start = max(start, 0)
+    end = start + len(answer)
+    return {"answer": answer, "score": 0.99, "start": start, "end": end}
+
+
+mock_qa_pipeline = MagicMock(side_effect=mock_qa_response)
 
 
 def mock_pipeline_factory(task_name: str, *args: Any, **kwargs: Any) -> MagicMock:
@@ -98,8 +118,12 @@ def mock_pipeline_factory(task_name: str, *args: Any, **kwargs: Any) -> MagicMoc
 async def init_test_db():
     """Initialize test database tables and seeds before running each test."""
     # Import all models to register them on Base
-    from omnitext.db.models import Base, User, APIKey, Analysis, Document, Dataset, Job
-    from omnitext.db.models.benchmark import ModelRegistryEntry, BenchmarkResult
+    from omnitext.db.models import Base
+    from omnitext.db.models import analysis as _analysis_models  # noqa: F401
+    from omnitext.db.models import benchmark as _benchmark_models  # noqa: F401
+    from omnitext.db.models import document as _document_models  # noqa: F401
+    from omnitext.db.models import job as _job_models  # noqa: F401
+    from omnitext.db.models import user as _user_models  # noqa: F401
     
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

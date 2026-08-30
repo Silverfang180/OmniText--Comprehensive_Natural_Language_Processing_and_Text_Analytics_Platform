@@ -45,7 +45,7 @@ def extract_text(file_bytes: bytes, filename: str, content_type: str) -> str:
 
     elif ext == "pdf" or "pdf" in content_type:
         try:
-            from pypdf import PdfReader  # type: ignore
+            from pypdf import PdfReader
             pdf_reader: Any = PdfReader(BytesIO(file_bytes))
             text = ""
             for page in pdf_reader.pages:
