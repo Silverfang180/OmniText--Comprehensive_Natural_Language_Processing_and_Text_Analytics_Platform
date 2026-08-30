@@ -28,17 +28,20 @@ jobs:
           pip install pytest pytest-asyncio mypy ruff types-PyYAML types-aiofiles types-requests
 
       - name: Run Ruff Linter
-        run: ruff check apps/api
+        working-directory: apps/api
+        run: ruff check .
 
       - name: Run Mypy Type Checker
+        working-directory: apps/api
         env:
-          PYTHONPATH: apps/api
-        run: mypy --config-file apps/api/pyproject.toml apps/api/omnitext
+          PYTHONPATH: .
+        run: mypy omnitext
 
       - name: Run Pytest Test Suite
+        working-directory: apps/api
         env:
-          PYTHONPATH: apps/api
-        run: pytest apps/api/tests -v
+          PYTHONPATH: .
+        run: pytest tests -v
 
   frontend-checks:
     name: Frontend Lint, Typecheck & Build
