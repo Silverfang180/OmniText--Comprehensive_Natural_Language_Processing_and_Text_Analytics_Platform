@@ -21,17 +21,16 @@ class Settings(BaseSettings):
 
     # CORS
     API_CORS_ORIGINS: str | list[str] = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
+        "*",
     ]
 
+
     # Database
-    API_DATABASE_URL: str = (
-        "postgresql+asyncpg://postgres:postgres@localhost:5432/omnitext"
-    )
-    DATABASE_URL_SYNC: str = "postgresql://postgres:postgres@localhost:5432/omnitext"
+    API_DATABASE_URL: str = "sqlite+aiosqlite:///omnitext.db"
+    DATABASE_URL_SYNC: str = "sqlite:///omnitext.db"
     DB_ECHO: bool = False
     API_STORAGE_DIR: str = "storage_data"
+
 
     # Worker
     WORKER_POLL_INTERVAL_SECONDS: float = 2.0
