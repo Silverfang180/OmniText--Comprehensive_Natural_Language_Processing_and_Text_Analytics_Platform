@@ -1,4 +1,15 @@
+---
+title: OmniText Backend API
+emoji: 🧠
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # OmniText · NLP & Text Intelligence
+
 
 OmniText is a modern, high-contrast text intelligence platform designed to deliver practical NLP insights directly to users. It integrates seven core text intelligence capabilities with robust model benchmarking, fine-tuning evaluations, and secure workspace isolation.
 
