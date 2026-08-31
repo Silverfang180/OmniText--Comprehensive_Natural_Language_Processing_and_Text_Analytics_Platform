@@ -24,12 +24,27 @@ class SummarizationAdapter(TaskAdapter):
         # Use pinned revision / tag if provided in parameter config, fallback to default
         revision = model_ref.version if model_ref.version else None
 
-        self.pipeline = pipeline(
-            "summarization",
-            model=model_id,
-            revision=revision,
-            device=-1,  # Force CPU
-        )
+        try:
+            self.pipeline = pipeline(
+                "summarization",
+                model=model_id,
+                revision=revision,
+                device=-1,  # Force CPU
+            )
+        except Exception:
+            try:
+                self.pipeline = pipeline(
+                    "text2text-generation",
+                    model=model_id,
+                    revision=revision,
+                    device=-1,
+                )
+            except Exception:
+                self.pipeline = pipeline(
+                    model=model_id,
+                    revision=revision,
+                    device=-1,
+                )
         self._is_loaded = True
 
     def predict(self, input_data: TaskInput) -> TaskOutput:
@@ -61,7 +76,8 @@ class SummarizationAdapter(TaskAdapter):
                     do_sample=False,
                     truncation=True,
                 )
-                summaries.append(outputs[0]["summary_text"])
+                text = outputs[0].get("summary_text") or outputs[0].get("generated_text", "")
+                summaries.append(text)
             summary_text = aggregate_summaries(summaries)
         else:
             outputs = self.pipeline(
@@ -71,7 +87,8 @@ class SummarizationAdapter(TaskAdapter):
                 do_sample=False,
                 truncation=True,
             )
-            summary_text = outputs[0]["summary_text"]
+            summary_text = outputs[0].get("summary_text") or outputs[0].get("generated_text", "")
+
 
         latency_ms = (time.perf_counter() - start_time) * 1000.0
 
