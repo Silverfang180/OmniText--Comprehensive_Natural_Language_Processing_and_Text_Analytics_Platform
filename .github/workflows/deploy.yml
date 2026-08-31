@@ -27,6 +27,7 @@ jobs:
           git config --global user.email "deploy-bot@omnitext.org"
           git config --global user.name "OmniText Deploy Bot"
           git remote remove hf 2>/dev/null || true
-          git remote add hf "https://SILVER-FANG:${HF_TOKEN}@huggingface.co/spaces/SILVER-FANG/omnitext-backend"
+          git remote add hf "https://SILVER-FANG:${HF_TOKEN}@huggingface.co/spaces/SILVER-FANG/omnitext-api"
+
 
           git push --force hf main:main || echo "::warning ::Failed to push to Hugging Face Space. Verify HF_TOKEN secret and Space existence."
