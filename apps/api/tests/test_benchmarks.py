@@ -16,6 +16,7 @@ from omnitext.worker.main import BackgroundWorker
 
 @pytest.mark.asyncio
 async def test_benchmarking_and_registry_flow() -> None:
+
     """Verify registry seeding, queuing benchmark run, processing worker job, and promoting active model."""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -103,7 +104,7 @@ async def test_benchmarking_and_registry_flow() -> None:
         # 6. Promote Registry Model (Unauthenticated returns 401)
         anon_promote = await client.post(
             "/api/v1/benchmarks/promote",
-            json={"task": "summarization", "model_id": "facebook/bart-large-cnn"},
+            json={"task": "summarization", "model_id": "sshleifer/distilbart-cnn-12-3"},
         )
         assert anon_promote.status_code == 401
 
@@ -111,7 +112,7 @@ async def test_benchmarking_and_registry_flow() -> None:
         promote_res = await client.post(
             "/api/v1/benchmarks/promote",
             headers=headers,
-            json={"task": "summarization", "model_id": "facebook/bart-large-cnn"},
+            json={"task": "summarization", "model_id": "sshleifer/distilbart-cnn-12-3"},
         )
         assert promote_res.status_code == 200
         assert promote_res.json()["data"]["success"] is True
@@ -125,7 +126,8 @@ async def test_benchmarking_and_registry_flow() -> None:
             res = await session.execute(stmt)
             active_models = res.scalars().all()
             assert len(active_models) == 1
-            assert active_models[0].model_id == "facebook/bart-large-cnn"
+            assert active_models[0].model_id == "sshleifer/distilbart-cnn-12-3"
+
 
         # Verify AnalysisService cache for summarization is cleared
         assert "summarization" not in AnalysisService._loaded_adapters
